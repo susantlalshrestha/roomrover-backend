@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules
+
+# Environment files
+.env
+
+# Test coverage directory
+coverage
+
+# Typescript output directory
+dist
+
+# Prisma output directory
+prisma/generated
+
+# MacOS directory
+.DS_Store

@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@graphql": ["src/graphql/index.ts"],
+      "@utils": ["src/utils/index"]
+    }
+  }
+}

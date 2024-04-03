@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.paths.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ESNext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "removeComments": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "ES2020"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules/**/*", "**/__test__/*", "**/*.{mock.ts,spec.ts,test.ts,seed.ts}", ".vscode/**/*"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

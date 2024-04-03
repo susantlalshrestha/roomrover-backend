@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  HOST
+  GUEST
+}
+
+enum ReservationStatus {
+  RESERVED
+  HOLD
+  PENDING
+  FAILED
+}
+
+enum PaymentProvider {
+  STRIPE
+}
+
+enum AssetType {
+  ROOM
+}
+
+enum TransactionStatus {
+  CREATED
+  REQUESTED
+  REQUEST_SUCCESSFULL
+  WEBHOOK_RECEIVED
+  SUCCESSFULL
+  FAILED
+}
+
+enum ChatType {
+  SINGLE
+  GROUP
+}
+
+model Account {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  firstName      String
+  lastName       String
+  email          String        @unique
+  emailVerified  Boolean       @default(false)
+  password       String
+  phoneNumber    String?       @unique
+  phoneVerified  Boolean       @default(false)
+  roles          Role[]
+  session        Session[]
+  myRoomAds      RoomAd[]
+  myReservations Reservation[]
+  myTransactions Transaction[]
+  myReviews      Reviews[]
+  chatsId        String[]      @db.ObjectId
+  chats          Chat[]        @relation("_AccountsChat", fields: [chatsId], references: [id])
+  sentMessages   Message[]
+  profilePhoto   String?
+  suspended      Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Session {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  city        String?
+  country     String?
+  countryCode String?
+  data        Json?
+  deviceID    String?
+  ipAddress   String   @unique
+  revoked     Boolean  @default(false)
+  userAgent   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  accountId   String   @db.ObjectId
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model RoomAd {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  description  String
+  deleted      Boolean       @default(false)
+  published    Boolean       @default(false)
+  publisherId  String        @db.ObjectId
+  publishedBy  Account       @relation(fields: [publisherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  address      Address?
+  images       String[]
+  price        Float
+  reservations Reservation[]
+  reviews      Reviews[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Address {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  aptUnit    String?
+  street     String
+  city       String
+  postalCode String
+  country    String
+  latitude   Float?
+  longitude  Float?
+  roomAdId   String   @unique @db.ObjectId
+  roomAd     RoomAd   @relation(fields: [roomAdId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Reservation {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  from        DateTime          @db.Date
+  to          DateTime          @db.Date
+  status      ReservationStatus @default(PENDING)
+  roomAdId    String            @db.ObjectId
+  roomAd      RoomAd            @relation(fields: [roomAdId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reserveeId  String            @db.ObjectId
+  reservee    Account           @relation(fields: [reserveeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transaction Transaction?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Transaction {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  provider            PaymentProvider   @default(STRIPE)
+  assetType           AssetType         @default(ROOM)
+  assetData           Json
+  description         String
+  amount              Float
+  currency            String
+  status              TransactionStatus
+  paymentIntentId     String?
+  requestedLog        Json?
+  responseReceivedLog Json?
+  webhookReceivedLog  Json?
+  webhookRespondedLog Json?
+  resultedLog         Json?
+  failedLog           Json?
+  accountId           String            @db.ObjectId
+  account             Account           @relation(fields: [accountId], references: [id])
+  reservationId       String            @unique @db.ObjectId
+  reservation         Reservation       @relation(fields: [reservationId], references: [id])
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+model Reviews {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  comment    String
+  rating     Float
+  roomAdId   String   @db.ObjectId
+  roomAd     RoomAd   @relation(fields: [roomAdId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reviewerId String   @db.ObjectId
+  reviewer   Account  @relation(fields: [reviewerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Chat {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  membersId String[]  @db.ObjectId
+  members   Account[] @relation("_AccountsChat", fields: [membersId], references: [id])
+  messages  Message[]
+  type      ChatType
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  chatId    String   @db.ObjectId
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  message   String
+  senderId  String   @db.ObjectId
+  sender    Account  @relation(fields: [senderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
