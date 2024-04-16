@@ -16,9 +16,10 @@ const handler: RequestHandler = async (req, res) => {
 
   const verificationCode = randomNumberOfNDigits(6);
   cache.store(cacheKey, verificationCode, 600);
+  console.log(verificationCode);
   // TODO: SEND OTP CODE TO PHONE NUMBER
 
-  res.status(200).json({ message: `Verificaiton code sent successfully to ${email}.` });
+  res.status(200).json({ data: { email }, message: `Verificaiton code sent successfully to ${email}.` });
 };
 
 export default (router: Router) => router.post("/resend-email-otp", handler);

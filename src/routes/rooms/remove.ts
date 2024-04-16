@@ -14,7 +14,7 @@ const handler: AuthRequestHandler = async (req, res) => {
   if (roomAd.publisherId != req.user.id)
     return res.status(401).json({ message: "Your are not authorized to perform this action!!" });
 
-  const updated = database.roomAd.update({ where: { id }, data: { deleted: true } });
+  await database.roomAd.update({ where: { id }, data: { deleted: true } });
 
   return res.status(200).json({ message: "Your room add is removed" });
 };

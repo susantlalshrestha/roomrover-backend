@@ -16,7 +16,7 @@ export default async (ipAddress: string) => {
         country: country_name,
         data,
       };
-      Logger.log("[COMPLETED]: Fetching ip data from IpStack", ipData);
+      Logger.log("[COMPLETED]: Fetching ip data from IpStack", ipData.ipAddress);
       return ipData;
     }
     Logger.log("[FAILED]: Fetching ip data from IpStack", ipAddress);

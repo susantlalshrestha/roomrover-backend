@@ -10,10 +10,11 @@ const handler: RequestHandler = async (req, res) => {
   let password = req.body.password?.trim();
 
   const isValid = password && email;
-  if (!isValid) return res.status(400).json({ message: "Provide all neccessary fields" });
+
+  if (!isValid) return res.status(400).json({ message: "Provide all neccessary fields!!" });
 
   const account = await database.account.findUnique({ where: { email } });
-  if (!account) return res.status(400).json({ message: "Phone number not in use" });
+  if (!account) return res.status(400).json({ message: "Email not in use!!" });
 
   const passwordMatched = matchPassword(password, account.password);
   if (!passwordMatched) return res.status(400).json({ message: "Incorrect phone number or password!!" });
@@ -25,19 +26,27 @@ const handler: RequestHandler = async (req, res) => {
   if (!account.emailVerified) {
     return res
       .status(401)
-      .json({ message: "Your account has been verified. Please verify your account!!", action: "verify-account" });
+      .json({ message: "Your account has not been verified. Please verify your account!!", action: "verify-account" });
   }
 
   const ipAddress = req.headers.host;
   const userAgent = req.headers["user-agent"];
+
   const ipData = await getIpData(ipAddress);
-  const session = await database.session.create({
-    data: {
+  const session = await database.session.upsert({
+    create: {
       userAgent,
       ipAddress,
       data: ipData,
       account: { connect: { id: account.id } },
     },
+    update: {
+      userAgent,
+      ipAddress,
+      data: ipData,
+      account: { connect: { id: account.id } },
+    },
+    where: { ipAddress },
   });
 
   const loggedAccount = omit(account, ["password", "chatsId"]);

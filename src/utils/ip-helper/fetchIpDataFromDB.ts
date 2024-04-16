@@ -14,7 +14,7 @@ export default async (ipAddress: string) => {
         data: true,
       },
     });
-    Logger.log(`[${ipData ? `COMPLETED` : `FAILED`}]: Fetching ip data from DB`, ipData);
+    Logger.log(`[${ipData ? `COMPLETED` : `FAILED`}]: Fetching ip data from DB`, ipData.ipAddress);
     return ipData;
   } catch (error) {
     Logger.log("[Failed]: Fetching ip data from DB", error);

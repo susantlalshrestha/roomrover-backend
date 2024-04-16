@@ -24,7 +24,7 @@
   "author": "susantlalshrestha",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.10.2",
+    "@prisma/client": "^5.12.1",
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "dataloader": "^2.2.2",
@@ -47,7 +47,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
     "nodemon": "^3.0.3",
-    "prisma": "^5.10.2",
+    "prisma": "^5.12.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"

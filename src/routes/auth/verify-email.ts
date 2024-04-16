@@ -19,7 +19,7 @@ const handler: RequestHandler = async (req, res) => {
 
   cache.delete(CacheKeys.verifyEmailOTP(email));
 
-  return res.status(200).json({ message: "Your email has been verified" });
+  return res.status(200).json({ data: { email }, message: "Your email has been verified" });
 };
 
 export default (router: Router) => router.post("/verify-email", handler);

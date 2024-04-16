@@ -43,8 +43,10 @@ const handler: RequestHandler = async (req, res) => {
   const verificationCode = randomNumberOfNDigits(6);
   await Promise.all([cache.store(CacheKeys.verifyEmailOTP(email), verificationCode, 600)]);
   // TODO: SEND OTP CODE TO EMAIL
+  console.log(verificationCode);
 
   return res.status(200).json({
+    data: { email },
     message: `Successfully register an account with email: ${email}`,
     action: "verify-email",
   });

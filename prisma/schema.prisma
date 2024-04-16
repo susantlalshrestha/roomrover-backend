@@ -49,7 +49,7 @@ model Account {
   email          String        @unique
   emailVerified  Boolean       @default(false)
   password       String
-  phoneNumber    String?       @unique
+  phoneNumber    String       @unique
   phoneVerified  Boolean       @default(false)
   roles          Role[]
   session        Session[]
