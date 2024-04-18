@@ -10,7 +10,7 @@ import chats from "./chats";
 const router = Router();
 
 router.use("/auth", auth);
-router.use("/acount", account);
+router.use("/account", account);
 router.use("/chats", chats);
 router.use("/rooms", rooms);
 router.use("/reservations", reservations);

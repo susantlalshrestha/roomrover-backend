@@ -29,30 +29,30 @@ const handler: RequestHandler = async (req, res) => {
       .json({ message: "Your account has not been verified. Please verify your account!!", action: "verify-account" });
   }
 
-  const ipAddress = req.headers.host;
-  const userAgent = req.headers["user-agent"];
+  // const ipAddress = req.headers.host;
+  // const userAgent = req.headers["user-agent"];
 
-  const ipData = await getIpData(ipAddress);
-  const session = await database.session.upsert({
-    create: {
-      userAgent,
-      ipAddress,
-      data: ipData,
-      account: { connect: { id: account.id } },
-    },
-    update: {
-      userAgent,
-      ipAddress,
-      data: ipData,
-      account: { connect: { id: account.id } },
-    },
-    where: { ipAddress },
-  });
+  // const ipData = await getIpData(ipAddress);
+  // const session = await database.session.upsert({
+  //   create: {
+  //     userAgent,
+  //     ipAddress,
+  //     data: ipData,
+  //     account: { connect: { id: account.id } },
+  //   },
+  //   update: {
+  //     userAgent,
+  //     ipAddress,
+  //     data: ipData,
+  //     account: { connect: { id: account.id } },
+  //   },
+  //   where: { ipAddress },
+  // });
 
   const loggedAccount = omit(account, ["password", "chatsId"]);
   const authToken = {
     access: encodeToken(loggedAccount, "access", { jwtid: account.id }),
-    refresh: encodeToken({ accountId: account.id }, "refresh", { jwtid: session.id }),
+    refresh: encodeToken({ accountId: account.id }, "refresh", { jwtid: account.id }),
   };
 
   return res.status(200).json({ data: { account: loggedAccount, token: authToken } });

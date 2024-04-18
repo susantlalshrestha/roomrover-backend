@@ -10,6 +10,10 @@ const handler: AuthRequestHandler = async (req, res) => {
   let title = req.body.title?.trim();
   let description = req.body.title?.trim();
   let price = req.body.price?.trim();
+  let images = req.body.images;
+  let published = req.body.published === true;
+
+  console.log(images);
 
   if (price) {
     if (isNaN(parseFloat(price))) return res.status(400).json({ message: "Invalid price provided!!" });
@@ -22,9 +26,12 @@ const handler: AuthRequestHandler = async (req, res) => {
   if (roomAd.publisherId != req.user.id)
     return res.status(401).json({ message: "Your are not authorized to perform this action!!" });
 
-  await database.roomAd.update({ where: { id }, data: { title, description, price } });
+  const updatedRoomAd = await database.roomAd.update({
+    where: { id },
+    data: { title, description, price, published, images },
+  });
 
-  return res.status(200).json({ message: "Your room add is updated" });
+  return res.status(200).json({ data: { roomAd: updatedRoomAd }, message: "Your room add is updated" });
 };
 
 export default (router: Router) => router.post("/update/:id", authMiddleware(["HOST"]), handler);

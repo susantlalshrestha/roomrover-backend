@@ -7,6 +7,6 @@ type TokenConfigs = {
 export type TokenKind = "access" | "refresh";
 
 export const tokenConfigs: TokenConfigs = {
-  access: { secret: AppEnv.accessTokenSecret, expiresIn: "6h" },
+  access: { secret: AppEnv.accessTokenSecret, expiresIn: "24h" },
   refresh: { secret: AppEnv.refreshTokenSecret, expiresIn: "30d" },
 };
